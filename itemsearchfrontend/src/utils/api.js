@@ -10,13 +10,13 @@ export const loginEmployee = (employeeId, email) => {
   });
 };
 
-// 🔍 Item Search API (directly calling Rootments API)
+
+
+
 export const searchItem = (itemCode, locationId) => {
   return axios.get('https://rentalapi.rootments.live/api/ItemSearch/GetItemSearch', {
-    params: {
-      ItemCode: itemCode,
-      LocationID: locationId
-    }
+    params: { itemCode, locationId },
   });
 };
+
 

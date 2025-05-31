@@ -14,3 +14,4 @@ export const fetchExternalAPI = async (url, method = 'GET', data = {}) => {
     throw new Error(err.response?.data?.message || 'API fetch error');
   }
 };
+

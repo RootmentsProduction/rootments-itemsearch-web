@@ -16,5 +16,3 @@ const loginEmployee = async (req, res) => {
 };
 
 module.exports = { loginEmployee };
-
-

@@ -10,9 +10,9 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/" element={session ? <Navigate to="/item-search" /> : <Navigate to="/login" />} />
-      <Route path="/login" element={<Login />} />
-      <Route path="/item-search" element={session ? <ItemSearch /> : <Navigate to="/login" />} />
+      <Route path="/item" element={session ? <Navigate to="/item-search" /> : <Navigate to="/" />} />
+      <Route path="/" element={<Login />} />
+      <Route path="/item-search" element={session ? <ItemSearch /> : <Navigate to="/" />} />
     </Routes>
   );
 }

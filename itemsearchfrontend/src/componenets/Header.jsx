@@ -10,7 +10,7 @@ const Header = () => {
   const navigate = useNavigate();
 
   const handleProfileClick = () => {
-    navigate('/login');
+    navigate('/');
   };
 
   return (
