@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5000;
 // Allowed frontend origins — update as per your deployment URLs
 const allowedOrigins = [
   'http://localhost:5173',            // local frontend dev port
-  // 'https://itemsearchfrontend.vercel.app',  // your deployed frontend
+  'https://rootments-itemsearch-web.vercel.app/',  
   // add other allowed origins if needed
 ];
 
