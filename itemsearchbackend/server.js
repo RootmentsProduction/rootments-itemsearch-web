@@ -5,33 +5,37 @@ const authRoutes = require('./routes/auth');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// ✅ Correct allowed origins — no trailing slashes
+// ✅ List of allowed origins (no trailing slashes)
 const allowedOrigins = [
-  'https://rootments-itemsearch-web.vercel.app'
+  'https://rootments-itemsearch-web.vercel.app',
+  'https://rootments-itemsearch-web.onrender.com'
 ];
 
 // ✅ CORS middleware
 app.use(cors({
-  origin: function(origin, callback) {
-    if (!origin) return callback(null, true); // allow Postman, curl
-    if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = `CORS blocked: ${origin} is not allowed`;
-      return callback(new Error(msg), false);
-    }
-    return callback(null, true);
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // Allow Postman, curl
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error(`CORS blocked for: ${origin}`), false);
   },
   credentials: true
 }));
 
-// ✅ Parse JSON body
+// ✅ Parse JSON request body
 app.use(express.json());
+
+// ✅ Log request origins (optional for debugging)
+app.use((req, res, next) => {
+  console.log(`Incoming request from: ${req.headers.origin || 'no origin'}`);
+  next();
+});
 
 // ✅ Auth routes
 app.use('/api/auth', authRoutes);
 
-// ✅ Optional test route
+// ✅ Test route
 app.get('/', (req, res) => {
-  res.send('✅ Backend is working');
+  res.send('✅ Backend is working!');
 });
 
 // ✅ Start server
