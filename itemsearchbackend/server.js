@@ -1,39 +1,48 @@
 const express = require('express');
 const cors = require('cors');
-const authRoutes = require('./routes/auth'); // Your auth routes
+const authRoutes = require('./routes/auth'); // adjust path if needed
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Allowed frontend origins — update as per your deployment URLs
+// ✅ Allowed frontend origins (without trailing slashes)
 const allowedOrigins = [
-  'http://localhost:5173',            // local frontend dev port
-  'https://rootments-itemsearch-web.vercel.app/',  
-  // add other allowed origins if needed
+  'http://localhost:5173',
+  'https://rootments-itemsearch-web.vercel.app'
 ];
 
-// CORS middleware configuration
+// ✅ CORS middleware configuration
 app.use(cors({
-  origin: function(origin, callback) {
+  origin: function (origin, callback) {
     // Allow requests with no origin (like Postman, curl)
     if (!origin) return callback(null, true);
     if (allowedOrigins.indexOf(origin) === -1) {
-      const msg = `The CORS policy for this site does not allow access from the specified Origin: ${origin}`;
+      const msg = `CORS policy does not allow access from origin: ${origin}`;
       return callback(new Error(msg), false);
     }
     return callback(null, true);
   },
-  credentials: true  // if your frontend sends cookies or auth headers
+  credentials: true
 }));
 
-// Middleware to parse JSON body requests
+// ✅ Debug logging (optional)
+app.use((req, res, next) => {
+  console.log('Incoming request from:', req.headers.origin || 'no origin');
+  next();
+});
+
+// ✅ Middleware to parse JSON body
 app.use(express.json());
 
-// Your API routes
+// ✅ Routes
 app.use('/api/auth', authRoutes);
 
-// You can add other routes here
+// ✅ Health check route (optional but useful)
+app.get('/', (req, res) => {
+  res.send('✅ Backend is working!');
+});
 
+// ✅ Start the server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
