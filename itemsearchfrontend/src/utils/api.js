@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:5000/api'; // your backend base URL (still used for login)
+const BASE_URL = 'https://rootments-itemsearch-web.onrender.com/api'; // your backend base URL (still used for login)
 
 // 🔐 Employee Login API (through your backend)
 export const loginEmployee = (employeeId, email) => {
