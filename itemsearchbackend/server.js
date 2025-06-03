@@ -10,7 +10,8 @@ const allowedOrigins = [
   'https://rootments-itemsearch-web.vercel.app',
   'https://rootments-itemsearch-web.onrender.com',
   'http://localhost:5173',
-  'http://localhost:5174' // Add more if needed
+  'http://localhost:5174',
+  'https://itemsearch.rootments.live'
 ];
 
 // ✅ CORS middleware
