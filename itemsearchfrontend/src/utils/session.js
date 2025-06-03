@@ -1,15 +1,22 @@
-// Save session data (example: after login)
+// src/utils/session.js
 export const saveSession = (data) => {
+  // write only valid JSON
   localStorage.setItem('employeeSession', JSON.stringify(data));
 };
 
-// Get session data (used in App.jsx to check login)
 export const getSession = () => {
-  const session = localStorage.getItem('employeeSession');
-  return session ? JSON.parse(session) : null;
+  try {
+    const raw = localStorage.getItem('employeeSession');
+    // reject absent or literal "undefined"
+    if (!raw || raw === 'undefined') return null;
+    return JSON.parse(raw);
+  } catch (err) {
+    console.warn('⚠️ Corrupt session removed:', err);
+    localStorage.removeItem('employeeSession');   // purge bad value
+    return null;
+  }
 };
 
-// Clear session (used on logout)
 export const clearSession = () => {
   localStorage.removeItem('employeeSession');
 };

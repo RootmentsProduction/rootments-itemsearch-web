@@ -12,25 +12,33 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+ const handleLogin = async (e) => {
+  e.preventDefault();
+  setError('');
+  setLoading(true);
 
-    try {
-      const res = await loginEmployee(employeeId, email);
-      if (res.data.success) {
-        saveSession(res.data.data);
-        navigate('/item-search');
-      } else {
-        setError('Invalid credentials');
-      }
-    } catch (err) {
-      setError('Login failed. Please try again.');
-    } finally {
-      setLoading(false);
+  try {
+    const res = await loginEmployee(employeeId, email);
+
+    if (res.data.success) {
+      /* 1️⃣  keep your current save */
+      saveSession(res.data.data);                                            
+
+      /* 2️⃣  remember where we want to go after the reload            */
+      localStorage.setItem('postLogin', '/item-search');
+
+      /* 3️⃣  trigger the one-time hard refresh                        */
+      window.location.reload();                                            
+      /* ↓ no navigate() here – the page is being replaced */
+    } else {
+      setError('Invalid credentials');
     }
-  };
+  } catch {
+    setError('Login failed. Please try again.');
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <Container fluid className="login-bg d-flex align-items-center justify-content-center min-vh-100">
