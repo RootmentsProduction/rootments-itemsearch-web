@@ -11,9 +11,11 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = [
   'https://rootments-itemsearch-web.vercel.app',
   'https://rootments-itemsearch-web.onrender.com',
+  'https://itemsearch-1.onrender.com',  
+  'https://itemsearch.vercel.app',            // ◀️ removed leading space
+  'https://itemsearch.rootments.live',
   'http://localhost:5173',
   'http://localhost:5174',
-  'https://itemsearch.rootments.live'
 ];
 
 // ✅ CORS middleware
