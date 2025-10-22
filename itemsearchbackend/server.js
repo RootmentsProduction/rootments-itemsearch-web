@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const authRoutes = require('./routes/auth');
+const itemRoutes = require('./routes/items');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -39,6 +40,9 @@ app.use((req, res, next) => {
 
 // ✅ Auth routes
 app.use('/api/auth', authRoutes);
+
+// ✅ Item routes
+app.use('/api', itemRoutes);
 
 // ✅ Test route
 app.get('/', (req, res) => {

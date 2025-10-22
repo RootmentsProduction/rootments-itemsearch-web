@@ -22,18 +22,18 @@ const QRScanner = ({ onScan, onClose }) => {
   }, [onScan]);
 
   return (
-    <Modal show centered size="lg" onHide={onClose}>
-      <Modal.Header closeButton>
+    <Modal show centered size="md" onHide={onClose}>
+      <Modal.Header closeButton className="bg-light">
         <Modal.Title className="text-success">
-          <i className="bi bi-qr-code-scan me-2"></i>Scan QR Code
+          <i className="fa-solid fa-qrcode me-2"></i>QR Scanner
         </Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        <div id="reader" style={{ width: '100%', maxWidth: '400px', margin: 'auto' }} className="mt-3" />
+      <Modal.Body className="p-0">
+        <div id="reader" style={{ width: '100%', height: '400px' }} />
       </Modal.Body>
-      <Modal.Footer>
-        <Button variant="outline-secondary" onClick={onClose}>
-          <i className="bi bi-x-circle me-2"></i>Close Scanner
+      <Modal.Footer className="bg-light">
+        <Button variant="secondary" onClick={onClose}>
+          Close
         </Button>
       </Modal.Footer>
     </Modal>
