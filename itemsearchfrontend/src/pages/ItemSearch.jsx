@@ -260,6 +260,7 @@ const storeToLocCode = {
   'SUITOR GUY TRIVANDRUM': '5',
   'SUITOR GUY CALICUT': '13',
   'SUITOR GUY KOZIKODE': '13',
+  'SUITOR GUY MG ROAD': '23',
 
 };
 
@@ -561,75 +562,54 @@ const ItemSearch = () => {
                             <Card key={index} className="mb-3 shadow-sm" style={{ borderRadius: '12px' }}>
                               <Card.Body className="p-3">
                                 <div className="row g-2">
-                                  <div className="col-6">
-                                    <small className="text-muted">Item Code</small>
-                                    <div className="fw-bold text-primary">{item.itemcode || '-'}</div>
-                                  </div>
-                                  <div className="col-6">
-                                    <small className="text-muted">Price</small>
-                                    <div className="fw-bold text-success">₹{item.price || '-'}</div>
-                                  </div>
-                                  <div className="col-12">
-                                    <small className="text-muted">Description</small>
-                                    <div className="fw-medium">{item.description || '-'}</div>
-                                  </div>
-                                  <div className="col-6">
-                                    <small className="text-muted">Count</small>
-                                    <div>
-                                      <span className="badge bg-success-subtle text-success px-2 py-1">
-                                        {item.itemCount || '-'}
-                                      </span>
+                                  {/* Only show Description if it has data */}
+                                  {item.description && item.description !== '-' && (
+                                    <div className="col-12">
+                                      <small className="text-muted">Description</small>
+                                      <div className="fw-medium">{item.description}</div>
                                     </div>
-                                  </div>
-                                  <div className="col-6">
-                                    <small className="text-muted">Category</small>
-                                    <div>
-                                      <span className="badge bg-info-subtle text-info px-2 py-1">
-                                        {item.category || '-'}
-                                      </span>
-                                    </div>
-                                  </div>
-                                  <div className="col-12">
-                                    <small className="text-muted">Location</small>
-                                    <div>{item.location || '-'}</div>
-                                  </div>
+                                  )}
                                   {(item.deliveryDate || item.bookingDate || item.returnDate || (item.customerName && item.customerName !== '-') || (item.phoneNo && item.phoneNo !== '-')) && (
                                     <>
                                       <div className="col-12 mt-2 pt-2 border-top">
                                         <small className="text-muted">Booking Details</small>
                                       </div>
-                                      <div className="col-6">
-                                        <small className="text-muted">Delivery Date</small>
-                                        <div>
-                                          {item.deliveryDate
-                                            ? dayjs(item.deliveryDate).format('D/MMM/YYYY')
-                                            : <span className="text-muted">-</span>}
+                                      {item.deliveryDate && (
+                                        <div className="col-6">
+                                          <small className="text-muted">Delivery Date</small>
+                                          <div>
+                                            {dayjs(item.deliveryDate).format('D/MMM/YYYY')}
+                                          </div>
                                         </div>
-                                      </div>
-                                      <div className="col-6">
-                                        <small className="text-muted">Booking Date</small>
-                                        <div>
-                                          {item.bookingDate
-                                            ? dayjs(item.bookingDate).format('D/MMM/YYYY')
-                                            : <span className="text-muted">-</span>}
+                                      )}
+                                      {item.bookingDate && (
+                                        <div className="col-6">
+                                          <small className="text-muted">Booking Date</small>
+                                          <div>
+                                            {dayjs(item.bookingDate).format('D/MMM/YYYY')}
+                                          </div>
                                         </div>
-                                      </div>
-                                      <div className="col-6">
-                                        <small className="text-muted">Return Date</small>
-                                        <div>
-                                          {item.returnDate
-                                            ? dayjs(item.returnDate).format('D/MMM/YYYY')
-                                            : <span className="text-muted">-</span>}
+                                      )}
+                                      {item.returnDate && (
+                                        <div className="col-6">
+                                          <small className="text-muted">Return Date</small>
+                                          <div>
+                                            {dayjs(item.returnDate).format('D/MMM/YYYY')}
+                                          </div>
                                         </div>
-                                      </div>
-                                      <div className="col-6">
-                                        <small className="text-muted">Customer Name</small>
-                                        <div>{item.customerName || <span className="text-muted">-</span>}</div>
-                                      </div>
-                                      <div className="col-12">
-                                        <small className="text-muted">Phone No</small>
-                                        <div>{item.phoneNo || <span className="text-muted">-</span>}</div>
-                                      </div>
+                                      )}
+                                      {item.customerName && item.customerName !== '-' && (
+                                        <div className="col-6">
+                                          <small className="text-muted">Customer Name</small>
+                                          <div>{item.customerName}</div>
+                                        </div>
+                                      )}
+                                      {item.phoneNo && item.phoneNo !== '-' && (
+                                        <div className="col-12">
+                                          <small className="text-muted">Phone No</small>
+                                          <div>{item.phoneNo}</div>
+                                        </div>
+                                      )}
                                     </>
                                   )}
                                 </div>
