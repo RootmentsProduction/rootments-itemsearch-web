@@ -217,10 +217,21 @@ const Login = ({ onLoginSuccess }) => {
 
       if (res.data.status === 'success') {
         const data = res.data.data;
+        console.log('📊 Login Success - Data received:', data);
+        console.log('📋 Keys in data:', Object.keys(data || {}));
+        
         saveSession(data);
         localStorage.setItem('storeName', data.Store);
-        localStorage.setItem('employeeId', data.EmployeeId);
+        localStorage.setItem('employeeId', data.EmployeeId || employeeId);
+        localStorage.setItem('employeeName', data.Name || data.EmployeeName || 'Unknown');
         localStorage.setItem('postLogin', '/item-search');
+        
+        console.log('✅ Saved to localStorage:', {
+          employeeId: localStorage.getItem('employeeId'),
+          employeeName: localStorage.getItem('employeeName'),
+          storeName: localStorage.getItem('storeName')
+        });
+        
         onLoginSuccess?.();
         navigate('/item-search');
       } else {

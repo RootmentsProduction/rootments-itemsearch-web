@@ -10,11 +10,21 @@ const searchItem = async (req, res) => {
     const response = await axios.get(
       'https://rentalapi.rootments.live/api/ItemSearch/GetItemSearch',
       {
-        params: { itemCode, locationId }
+        params: { itemCode, locationId },
+        timeout: 10000 // 10 second timeout
       }
     );
 
-    console.log('✅ Item Search API Response:', response.data);
+    console.log('✅ Item Search API Response Status:', response.status);
+    console.log('✅ Item Search Response Data Keys:', Object.keys(response.data || {}));
+    
+    // Log the structure to understand better
+    if (response.data?.dataSet?.data) {
+      console.log(`✅ Item Search found ${response.data.dataSet.data.length} items`);
+    } else {
+      console.log('⚠️ Item Search response structure:', JSON.stringify(response.data, null, 2).substring(0, 500));
+    }
+    
     res.json(response.data);
   } catch (error) {
     console.error('❌ Item Search error:', {

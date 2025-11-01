@@ -21,7 +21,8 @@ const QRScanner = ({ onScan, onClose }) => {
           qrbox: 250
         },
         (decodedText, decodedResult) => {
-          console.log("QR code scanned:", decodedText);
+          console.log("Code scanned:", decodedText);
+          console.log("Decoded result:", decodedResult);
           if (isScanningRef.current && scannerRef.current) {
             scannerRef.current.stop().then(() => {
               if (scannerRef.current) {
@@ -80,7 +81,7 @@ const QRScanner = ({ onScan, onClose }) => {
     <Modal show centered size="md" onHide={handleClose} backdrop="static" onEntered={handleModalEntered}>
       <Modal.Header closeButton className="border-0">
         <Modal.Title className="text-success fw-bold">
-          <i className="fa-solid fa-qrcode me-2"></i>Scan QR Code
+          <i className="fa-solid fa-barcode me-2"></i>Scan Code
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="p-0 text-center position-relative">

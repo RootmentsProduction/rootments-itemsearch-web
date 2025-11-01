@@ -10,6 +10,11 @@ export const loginEmployee = (employeeId, password) => {
   });
 };
 
+// 📊 Save Scan Activity API
+export const saveScanActivity = (scanData) => {
+  return axios.post(`${BASE_URL}/scan-activity`, scanData);
+};
+
 
 
 
@@ -96,12 +101,19 @@ export const searchItemWithFallback = async (itemCode, locationId) => {
     
     console.log('📋 All items array:', allItems);
     
-    // Filter results by itemCode
-    const filteredData = allItems.filter(item => 
-      item && item.itemcode === itemCode
-    );
+    // Filter results by itemCode (case-insensitive, trimmed)
+    const normalizedItemCode = itemCode.trim().toLowerCase();
+    const filteredData = allItems.filter(item => {
+      if (!item) return false;
+      // Try both 'itemcode' and 'ItemCode' casing
+      const itemCodeValue = item.itemcode || item.ItemCode || '';
+      return itemCodeValue.toString().trim().toLowerCase() === normalizedItemCode;
+    });
     
     console.log('📊 GetItemReport result:', filteredData.length, 'items found after filtering');
+    if (filteredData.length === 0 && allItems.length > 0) {
+      console.warn('⚠️ No items matched, sample itemCodes:', allItems.slice(0, 3).map(i => i.itemcode || i.ItemCode));
+    }
     
     // Map GetItemReport fields to existing table structure
     const mappedData = filteredData.map(item => ({
