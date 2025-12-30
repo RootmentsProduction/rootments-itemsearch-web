@@ -275,10 +275,6 @@ const ItemSearch = () => {
     Object.keys(storeToLocCode).find(key => key.toUpperCase() === storeName)
   ] : '';
 
-  // Debug: log store name and locationId
-  console.log('Store name from localStorage:', rawStoreName);
-  console.log('Normalized store name:', storeName);
-  console.log('Resolved locationId:', locationId);
 
   const [itemCode, setItemCode] = useState('');
   const [results, setResults] = useState([]);
@@ -288,7 +284,7 @@ const ItemSearch = () => {
   const [showQR, setShowQR] = useState(false);
   const [apiUsed, setApiUsed] = useState('');
   
-  // Helper function to track scan activity
+  // Helper function to track scan activity (optimized - minimal logging)
   const trackScanActivity = async (code, scanType, success = true, error = null, duration = null) => {
     try {
       const employeeId = localStorage.getItem('employeeId');
@@ -301,43 +297,24 @@ const ItemSearch = () => {
                                  employeeId !== 'null' && 
                                  employeeId.trim() !== '';
       
-      console.log('📊 Tracking scan activity:', {
-        employeeId,
-        employeeName,
-        storeName,
-        code,
-        scanType,
-        isValidEmployeeId
-      });
-      
       if (isValidEmployeeId && code) {
-        try {
-          await saveScanActivity({
-            employeeId,
-            employeeName,
-            storeName,
-            locationId,
-            scannedCode: code,
-            searchMethod: scanType, // 'manual', 'qr_code', 'barcode', etc.
-            scanSuccess: success,
-            error: error,
-            scanDuration: duration
-          });
-          console.log('✅ Scan activity tracked successfully');
-        } catch (saveErr) {
-          console.error('⚠️ Failed to save scan activity:', saveErr.response?.data || saveErr.message);
-          // Don't fail the whole search if tracking fails
-        }
-      } else {
-        console.warn('⚠️ Skipping tracking - invalid employeeId or code:', {
+        // Fire and forget - don't await to avoid blocking
+        saveScanActivity({
           employeeId,
-          code: !!code,
-          isValidEmployeeId
+          employeeName,
+          storeName,
+          locationId,
+          scannedCode: code,
+          searchMethod: scanType,
+          scanSuccess: success,
+          error: error,
+          scanDuration: duration
+        }).catch(() => {
+          // Silently fail - tracking shouldn't affect user experience
         });
       }
     } catch (err) {
-      console.error('⚠️ Failed to track scan activity:', err);
-      // Don't show error to user, just log
+      // Silently fail - tracking shouldn't affect user experience
     }
   };
 
@@ -355,41 +332,30 @@ const ItemSearch = () => {
     const startTime = Date.now();
 
     try {
-      console.log('🔍 Searching for item:', code.trim());
-      console.log('📍 Using locationId:', locationId);
-      console.log('🌐 Using fallback search function...');
-      
       const res = await searchItemWithFallback(code.trim(), locationId);
-      console.log('📡 Full API response:', res);
-      console.log('📊 Response data:', res.data);
-      console.log('🚀 API Used:', res.data?.apiUsed);
-      console.log('📋 Expected data path:', res.data?.dataSet?.data);
-      
       const data = res.data?.dataSet?.data || [];
       const duration = Date.now() - startTime;
 
       if (data.length > 0) {
         setResults(data);
         setApiUsed(res.data?.apiUsed || '');
-        console.log('✅ Found results using', res.data?.apiUsed, ':', data);
         
-        // Track successful search (scan or manual)
+        // Track successful search (non-blocking - fire and forget)
         trackScanActivity(code.trim(), searchMethod, true, null, duration);
       } else {
         setError('No records found for the scanned item in your location.');
         setResults([]);
         setApiUsed('');
-        console.log('❌ No results found from both APIs');
         
-        // Track failed search
+        // Track failed search (non-blocking - fire and forget)
         trackScanActivity(code.trim(), searchMethod, false, 'No results found', duration);
       }
     } catch (err) {
-      console.error('💥 API Error:', err);
+      console.error('API Error:', err.message);
       setError('Failed to fetch item data. Please try again.');
       setResults([]);
       
-      // Track error
+      // Track error (non-blocking - fire and forget)
       trackScanActivity(code.trim(), searchMethod, false, err.message, Date.now() - startTime);
     } finally {
       setLoading(false);
@@ -401,41 +367,43 @@ const ItemSearch = () => {
     setShowQR(false);
     setItemCode(scannedCode);
     setError('');
-    setResults([]);
+    setResults([]); // Clear previous results immediately
+    setScannedResults([]); // Clear previous scanned results immediately
+    setLoading(true); // Show loading state
     const startTime = Date.now();
 
     try {
-      console.log('📱 Code scanned:', scannedCode);
-      console.log('📍 Using locationId:', locationId);
-      
       const response = await searchItemWithFallback(scannedCode, locationId);
-      console.log('🚀 QR Search API Used:', response.data?.apiUsed);
-
       const duration = Date.now() - startTime;
 
       if (response.data?.dataSet?.data?.length > 0) {
-        setScannedResults(response.data.dataSet.data);
+        const data = response.data.dataSet.data;
+        // Update both scannedResults and results immediately
+        setScannedResults(data);
+        setResults(data); // Directly update results so table shows immediately
         setApiUsed(response.data?.apiUsed || '');
-        console.log('✅ QR results found using', response.data?.apiUsed, ':', response.data.dataSet.data);
         
-        // Track successful scan (both QR and barcode detection is automatic)
+        // Track successful scan (non-blocking - fire and forget)
         trackScanActivity(scannedCode, 'qr_code', true, null, duration);
       } else {
         setScannedResults([]);
+        setResults([]); // Ensure results is also cleared
         setApiUsed('');
         setError('No matching records found for scanned code.');
-        console.log('❌ No QR results found from both APIs');
         
-        // Track failed scan
+        // Track failed scan (non-blocking - fire and forget)
         trackScanActivity(scannedCode, 'qr_code', false, 'No results found', duration);
       }
     } catch (err) {
-      console.error('💥 QR API Error:', err);
+      console.error('QR API Error:', err.message);
       setError('Failed to fetch data for scanned code.');
       setScannedResults([]);
+      setResults([]); // Ensure results is also cleared on error
       
-      // Track error
+      // Track error (non-blocking - fire and forget)
       trackScanActivity(scannedCode, 'qr_code', false, err.message, Date.now() - startTime);
+    } finally {
+      setLoading(false); // Hide loading state
     }
   };
 
