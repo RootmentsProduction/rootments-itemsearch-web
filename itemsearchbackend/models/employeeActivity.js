@@ -104,11 +104,16 @@ const employeeActivitySchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Index for faster queries
-employeeActivitySchema.index({ employeeId: 1, loginTime: -1 });
-employeeActivitySchema.index({ loginTime: -1 });
-employeeActivitySchema.index({ activityType: 1, loginTime: -1 });
-employeeActivitySchema.index({ scannedCode: 1 });
+// Compound indexes for common query patterns
+employeeActivitySchema.index({ employeeId: 1, loginTime: -1 });       // employee history
+employeeActivitySchema.index({ activityType: 1, loginTime: -1 });     // filter by type + sort
+employeeActivitySchema.index({ storeName: 1, loginTime: -1 });        // store-level reports
+employeeActivitySchema.index({ loginTime: -1 });                       // global sort/date range
+employeeActivitySchema.index({ scannedCode: 1, loginTime: -1 });      // scan lookup
+employeeActivitySchema.index({ employeeId: 1, activityType: 1, loginTime: -1 }); // employee type filter
+// Sparse index — only indexes docs where field exists (saves space)
+employeeActivitySchema.index({ sessionId: 1 }, { sparse: true });
+employeeActivitySchema.index({ ipAddress: 1 }, { sparse: true });
 
 module.exports = mongoose.model('EmployeeActivity', employeeActivitySchema);
 

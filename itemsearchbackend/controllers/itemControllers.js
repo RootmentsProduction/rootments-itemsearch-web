@@ -58,7 +58,8 @@ const getAllItems = async (req, res) => {
       {
         LocationID,
         UserID
-      }
+      },
+      { timeout: 10000 }
     );
 
     console.log('✅ Item Report API Response:', response.data);

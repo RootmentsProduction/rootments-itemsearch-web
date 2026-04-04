@@ -55,8 +55,11 @@ const loginEmployee = async (req, res) => {
 
       try {
         const activity = new EmployeeActivity(activityData);
-        await activity.save();
-        console.log('✅ Employee activity saved to MongoDB');
+        // Fire and forget — don't block login response on DB write
+        activity.save().catch(dbError => {
+          console.error('⚠️ Failed to save activity to MongoDB:', dbError.message);
+        });
+        console.log('✅ Employee activity save initiated');
       } catch (dbError) {
         console.error('⚠️ Failed to save activity to MongoDB:', dbError.message);
         // Don't fail the login if DB save fails
