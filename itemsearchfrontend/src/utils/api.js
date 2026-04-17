@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BASE_URL = 'https://itemsearch-q30k.onrender.com/api';
+const BASE_URL = 'https://rootments-itemsearch-web-1.onrender.com/api';
 
 // Keep Render free tier warm — ping every 13 minutes to prevent cold starts
 const pingBackend = () => axios.get(BASE_URL.replace('/api', '/')).catch(() => {});
