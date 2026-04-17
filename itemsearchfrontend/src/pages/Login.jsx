@@ -221,9 +221,15 @@ const Login = ({ onLoginSuccess }) => {
         console.log('📋 Keys in data:', Object.keys(data || {}));
         
         saveSession(data);
-        localStorage.setItem('storeName', data.Store);
-        localStorage.setItem('employeeId', data.EmployeeId || employeeId);
-        localStorage.setItem('employeeName', data.Name || data.EmployeeName || 'Unknown');
+        
+        // Save individual fields - try multiple field name variations
+        const empId = data.employeeId || data.EmployeeId || data.employee_id || employeeId;
+        const empName = data.employeeName || data.Name || data.EmployeeName || data.name || 'Unknown';
+        const store = data.storeName || data.Store || data.store || '';
+        
+        localStorage.setItem('employeeId', empId);
+        localStorage.setItem('employeeName', empName);
+        localStorage.setItem('storeName', store);
         localStorage.setItem('postLogin', '/item-search');
         
         console.log('✅ Saved to localStorage:', {

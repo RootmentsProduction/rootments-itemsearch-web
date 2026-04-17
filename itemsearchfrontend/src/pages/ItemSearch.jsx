@@ -298,6 +298,7 @@ const ItemSearch = () => {
                                  employeeId.trim() !== '';
       
       if (isValidEmployeeId && code) {
+        console.log('📊 Tracking scan activity:', { employeeId, code, scanType });
         // Fire and forget - don't await to avoid blocking
         saveScanActivity({
           employeeId,
@@ -309,12 +310,16 @@ const ItemSearch = () => {
           scanSuccess: success,
           error: error,
           scanDuration: duration
-        }).catch(() => {
-          // Silently fail - tracking shouldn't affect user experience
+        }).then(() => {
+          console.log('✅ Scan activity saved successfully');
+        }).catch((err) => {
+          console.error('⚠️ Failed to save scan activity:', err.message);
         });
+      } else {
+        console.warn('⚠️ Cannot track scan - missing employeeId:', { employeeId, code });
       }
     } catch (err) {
-      // Silently fail - tracking shouldn't affect user experience
+      console.error('⚠️ Error in trackScanActivity:', err.message);
     }
   };
 
