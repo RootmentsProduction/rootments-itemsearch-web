@@ -291,6 +291,13 @@ const ItemSearch = () => {
       const employeeName = localStorage.getItem('employeeName');
       const storeName = localStorage.getItem('storeName');
       
+      console.log('🔍 DEBUG - localStorage values:', {
+        employeeId,
+        employeeName,
+        storeName,
+        allKeys: Object.keys(localStorage)
+      });
+      
       // Validate employeeId is actually valid (not "undefined", "null", empty, etc.)
       const isValidEmployeeId = employeeId && 
                                  employeeId !== 'undefined' && 
@@ -298,9 +305,7 @@ const ItemSearch = () => {
                                  employeeId.trim() !== '';
       
       if (isValidEmployeeId && code) {
-        console.log('📊 Tracking scan activity:', { employeeId, code, scanType });
-        // Fire and forget - don't await to avoid blocking
-        saveScanActivity({
+        const payload = {
           employeeId,
           employeeName,
           storeName,
@@ -310,13 +315,22 @@ const ItemSearch = () => {
           scanSuccess: success,
           error: error,
           scanDuration: duration
-        }).then(() => {
-          console.log('✅ Scan activity saved successfully');
+        };
+        
+        console.log('📊 Sending scan activity payload:', payload);
+        
+        // Fire and forget - don't await to avoid blocking
+        saveScanActivity(payload).then((response) => {
+          console.log('✅ Scan activity saved successfully:', response.data);
         }).catch((err) => {
-          console.error('⚠️ Failed to save scan activity:', err.message);
+          console.error('⚠️ Failed to save scan activity:', err.response?.data || err.message);
         });
       } else {
-        console.warn('⚠️ Cannot track scan - missing employeeId:', { employeeId, code });
+        console.warn('⚠️ Cannot track scan - missing or invalid employeeId:', { 
+          employeeId, 
+          isValid: isValidEmployeeId,
+          code 
+        });
       }
     } catch (err) {
       console.error('⚠️ Error in trackScanActivity:', err.message);
