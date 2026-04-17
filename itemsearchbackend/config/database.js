@@ -5,8 +5,10 @@ const connectDB = async () => {
     const conn = await mongoose.connect(
       'mongodb+srv://abhiram:root@cluster0.niouvcp.mongodb.net/itemsearch?retryWrites=true&w=majority',
       {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
+        maxPoolSize: 10,          // reuse up to 10 connections instead of creating new ones
+        serverSelectionTimeoutMS: 5000,  // fail fast if mongo is unreachable
+        socketTimeoutMS: 45000,   // close idle sockets after 45s
+        connectTimeoutMS: 10000,  // connection timeout
       }
     );
 
