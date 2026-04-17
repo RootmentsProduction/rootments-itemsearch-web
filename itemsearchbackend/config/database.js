@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(
-      'mongodb+srv://abhiram:root@cluster0.niouvcp.mongodb.net/itemsearch?retryWrites=true&w=majority',
+      'mongodb+srv://rootmentsit_db_user:Brynex@cluster0.afnmxc4.mongodb.net/itemsearch?appName=Cluster0',
       {
         maxPoolSize: 10,          // reuse up to 10 connections instead of creating new ones
         serverSelectionTimeoutMS: 5000,  // fail fast if mongo is unreachable
