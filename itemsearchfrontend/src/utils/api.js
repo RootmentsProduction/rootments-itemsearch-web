@@ -3,13 +3,29 @@ import axios from 'axios';
 // Backend API URL - Updated to use new Render deployment
 const BASE_URL = 'https://rootments-itemsearch-web-1.onrender.com/api';
 
+// Rootments external API
+const ROOTMENTS_API = 'https://rootments.in/api';
+const ROOTMENTS_TOKEN = 'Bearer RootX-production-9d17d9485eb772e79df8564004d4a4d4';
+
 // Keep Render free tier warm — ping every 13 minutes to prevent cold starts
 const pingBackend = () => axios.get(BASE_URL.replace('/api', '/')).catch(() => {});
 setInterval(pingBackend, 13 * 60 * 1000);
 
-// 🔐 Employee Login API
-export const loginEmployee = (employeeId, password) => {
-  return axios.post(`${BASE_URL}/auth/login`, { employeeId, password });
+// 🔐 Employee Login — calls rootments.in directly to bypass Render network block
+export const loginEmployee = async (employeeId, password) => {
+  const response = await axios.post(
+    `${ROOTMENTS_API}/verify_employee`,
+    { employeeId, password },
+    {
+      headers: { Authorization: ROOTMENTS_TOKEN },
+      timeout: 15000,
+    }
+  );
+
+  // Fire activity log to backend in background (don't block login)
+  axios.post(`${BASE_URL}/auth/login-activity`, { employeeId, data: response.data }).catch(() => {});
+
+  return response;
 };
 
 // 📊 Save Scan Activity API (fire and forget — short timeout)

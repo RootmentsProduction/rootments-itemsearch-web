@@ -87,5 +87,41 @@ const loginEmployee = async (req, res) => {
   }
 };
 
-module.exports = { loginEmployee };
+module.exports = { loginEmployee, loginActivity };
+
+async function loginActivity(req, res) {
+  try {
+    const { employeeId, data } = req.body;
+    if (!data || data.status !== 'success') return res.json({ ok: true });
+
+    const userAgent = req.headers['user-agent'] || 'Unknown';
+    const deviceInfo = getDeviceInfo(userAgent, req);
+    const d = data.data || {};
+
+    const activity = new EmployeeActivity({
+      employeeId: d.employeeId || employeeId,
+      employeeName: d.employeeName || d.Name || 'Unknown',
+      storeName: d.storeName || d.Store || '',
+      locationId: d.locationId || '',
+      employeePhone: d.phoneNumber || '',
+      email: d.email || '',
+      activityType: 'login',
+      activityDescription: 'Employee login',
+      browser: deviceInfo.browser,
+      browserVersion: deviceInfo.browserVersion,
+      operatingSystem: deviceInfo.operatingSystem,
+      deviceType: deviceInfo.deviceType,
+      deviceModel: `${deviceInfo.deviceVendor} ${deviceInfo.deviceModel}`,
+      screenResolution: deviceInfo.screenResolution,
+      ipAddress: deviceInfo.ipAddress,
+      userAgent: deviceInfo.userAgent,
+      sessionId: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    });
+
+    activity.save().catch(e => console.error('⚠️ Activity save failed:', e.message));
+    res.json({ ok: true });
+  } catch (e) {
+    res.json({ ok: true }); // never fail the client
+  }
+}
 
