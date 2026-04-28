@@ -10,12 +10,13 @@ const loginEmployee = async (req, res) => {
 
   try {
     const response = await axios.post(
-      'https://rootments.in/api/verify_employee',
+      'http://rootments.in/api/verify_employee',
       { employeeId, password },
       {
         headers: {
           Authorization: 'Bearer RootX-production-9d17d9485eb772e79df8564004d4a4d4',
         },
+        timeout: 10000, // 10 second timeout
       }
     );
 
