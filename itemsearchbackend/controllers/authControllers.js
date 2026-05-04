@@ -3,7 +3,7 @@ const axios = require('axios');
 const EmployeeActivity = require('../models/employeeActivity');
 const { getDeviceInfo } = require('../utils/deviceDetector');
 
-const loginEmployee = async (req, res) => {
+const    loginEmployee = async (req, res) => {
   const { employeeId, password } = req.body;
 
   console.log('📥 Received from frontend:', req.body);
