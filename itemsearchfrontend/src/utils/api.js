@@ -1,15 +1,11 @@
 import axios from 'axios';
 
-// Backend API URL - Updated to use new Render deployment
-const BASE_URL = 'https://rootments-itemsearch-web-1.onrender.com/api';
+// Backend API URL - AWS production backend
+const BASE_URL = 'https://itemsearch.brynexapparels.in/api';
 
 // Rootments external API
 const ROOTMENTS_API = 'https://rootments.in/api';
 const ROOTMENTS_TOKEN = 'Bearer RootX-production-9d17d9485eb772e79df8564004d4a4d4';
-
-// Keep Render free tier warm — ping every 13 minutes to prevent cold starts
-const pingBackend = () => axios.get(BASE_URL.replace('/api', '/')).catch(() => {});
-setInterval(pingBackend, 13 * 60 * 1000);
 
 // 🔐 Employee Login — calls rootments.in directly to bypass Render network block
 export const loginEmployee = async (employeeId, password) => {
